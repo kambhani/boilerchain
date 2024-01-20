@@ -15,7 +15,7 @@ r = redis.Redis(
     password=os.getenv('REDIS_PASSWORD'),
     decode_responses=True
 )
-#r.flushdb()
+r.flushdb()
 
 app = FastAPI()  # Start the API
 
@@ -50,5 +50,14 @@ def get_mine_block():
         return block
     else:
         return {"message": "Block was not successfully mined"}
+
+
+@app.get("/user/{user_id}")
+def get_user(user_id: str):
+    user = r.hgetall(f"user:{user_id}")
+    if (len(user) == 0):
+        return {"message": "User not found"}
+    else:
+        return user
 
 
