@@ -15,7 +15,7 @@ r = redis.Redis(
     password=os.getenv('REDIS_PASSWORD'),
     decode_responses=True
 )
-r.flushdb()
+#r.flushdb()
 
 app = FastAPI()  # Start the API
 
@@ -44,7 +44,11 @@ def get_last_block():
 @app.get("/blocks/mine")
 def get_mine_block():
     last_block = blockchain.last_block()
+    print(vars(last_block))
     block = Block(int(last_block.index) + 1, int(time.time()), last_block.hash, 0, "system", "")
-    return vars(blockchain.proof_of_work(block))
+    if blockchain.add_block(blockchain.proof_of_work(block)):
+        return block
+    else:
+        return {"message": "Block was not successfully mined"}
 
 

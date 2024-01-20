@@ -24,17 +24,19 @@ class Blockchain:
         last_block = int(self.r.get("block_count")) - 1
         return Block(**self.r.hgetall(f"block:{str(last_block)}"))
 
-    def add_block(self, block: Block):
+    def add_block(self, block: Block) -> bool:
         last_block = self.last_block()
 
-        if block.index != last_block.index + 1: return False  # Check that the index is valid
+        if block.index != int(last_block.index) + 1: return False  # Check that the index is valid
         if block.compute_hash() != block.hash: return False  # Check that the provided hash is accurate
         if last_block.hash != block.previous_hash: return False  # Check that the previous hashes match
-        if block.timestamp < last_block.timestamp or block.timestamp > time.time(): return False  # Check that the # timestamp is valid
+        if block.timestamp < int(last_block.timestamp) or block.timestamp > time.time(): return False  # Check that the # timestamp is valid
         if not self.is_valid_proof(block): return False  # Check that the proof (esp the author/nonce) are valid
 
-        self.r.hset(f"block:{str(block.index)}", vars(block))
+
+        self.r.hset(f"block:{str(block.index)}", mapping=vars(block))
         self.r.incrby("block_count", 1)
+        return True
 
     def is_valid_proof(self, block: Block) -> bool:
         return block.compute_hash().startswith('0' * self.difficulty)

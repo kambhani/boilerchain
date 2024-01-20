@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.amplify-button--primary {
+	background-color: rgba(127, 127, 200, 0.8);
+}
+
+.amplify-button--primary:hover {
+	background-color: rgba(127, 127, 200, 1);
+}
