@@ -17,26 +17,13 @@ import {
 	Card,
 	CardHeader,
 	CardBody,
-	CardFooter,
 	useColorMode,
 	LightMode,
 	Stat,
-	StatLabel,
-	StatNumber,
 	StatGroup,
-	StatHelpText,
-	StatArrow,
-	Container,
-	Box,
-	Heading,
-	Stack,
-	StackDivider,
-	Text,
 	Tabs,
 	Tab,
 	TabList,
-	TabPanels,
-	TabPanel,
 	NumberInput,
 	NumberInputField,
 	NumberInputStepper,
@@ -45,12 +32,19 @@ import {
 	FormControl,
 	FormLabel,
 	FormHelperText,
-	Input,
 	Code,
 } from "@chakra-ui/react";
 import { useEffect, useState } from "react";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import BlocksMined from "./BlocksMined";
+//import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import BlocksMined from "./stats/BlocksMined";
+import UserBalance from "./stats/UserBalance";
+import UserBlocksMined from "./stats/UserBlocksMined";
+import UserCount from "./stats/UserCount";
+import LatestBlock from "./LatestBlock";
+import ViewBlockInfo from "./ViewBlockInfo";
+import GenerateNextBlock from "./generate/GenerateNextBlock";
+import ListTopUsers from "./ListTopUsers";
+import SendBoilercoin from "./SendBoilercoin";
 
 Amplify.configure(awsExports);
 
@@ -76,9 +70,8 @@ function App() {
 	const { colorMode, toggleColorMode } = useColorMode();
 
 	// Form field values
-	const [receipient, setReceipient] = useState("");
-	const [amount, setAmount] = useState(0);
 	const [blockNumber, setBlockNumber] = useState(0);
+	const [blockNumberSearch, setBlockNumberSearch] = useState(0);
 
 	const switchTheme = () => {
 		toggle();
@@ -139,78 +132,41 @@ function App() {
 									<div className="p-4">
 										<div className="grid grid-cols-12 gap-4">
 											<div className="col-span-12 bg-emerald-200 dark:bg-emerald-900 rounded-lg">
-												<Container className="py-4 px-2 sm:px-4">
-													<StatGroup>
+												<div className="p-4 w-full sm:w-2/3 mx-auto">
+													<StatGroup className="gap-4">
 														<Stat>
 															<BlocksMined />
 														</Stat>
-
 														<Stat>
-															<StatLabel>Your Blocks</StatLabel>
-															<StatNumber>45</StatNumber>
-															<StatHelpText>
-																<StatArrow type="decrease" />
-																9.05%
-															</StatHelpText>
+															<UserBlocksMined
+																user={user?.userId ?? "system"}
+															/>
 														</Stat>
 														<Stat>
-															<StatLabel>Your Balance</StatLabel>
-															<StatNumber>2980</StatNumber>
-															<StatHelpText>
-																<StatArrow type="decrease" />
-																11.05%
-															</StatHelpText>
+															<UserBalance user={user?.userId ?? "system"} />
+														</Stat>
+														<Stat>
+															<UserCount />
 														</Stat>
 													</StatGroup>
-												</Container>
+												</div>
 											</div>
 											<Card
 												size="md"
 												className="col-span-12 sm:col-span-6 xl:col-span-3">
 												<CardHeader>
-													<h2 className="text-3xl">Top miners</h2>
+													<h2 className="text-3xl">Top Users</h2>
 												</CardHeader>
 												<CardBody>
-													<Stack divider={<StackDivider />} spacing="4">
-														<Box>
-															<Heading size="xs" textTransform="uppercase">
-																Name 1
-															</Heading>
-															<Text pt="2" fontSize="sm">
-																23 blocks mined
-															</Text>
-														</Box>
-														<Box>
-															<Heading size="xs" textTransform="uppercase">
-																Name 2
-															</Heading>
-															<Text pt="2" fontSize="sm">
-																20 blocks mined
-															</Text>
-														</Box>
-														<Box>
-															<Heading size="xs" textTransform="uppercase">
-																Name 3
-															</Heading>
-															<Text pt="2" fontSize="sm">
-																17 blocks mined
-															</Text>
-														</Box>
-													</Stack>
+													<ListTopUsers />
 												</CardBody>
 											</Card>
 											<Card className="col-span-12 sm:col-span-6 xl:col-span-3">
 												<CardHeader className="!pb-2">
 													<h2 className="text-3xl">Latest Block</h2>
 												</CardHeader>
-												<CardBody className="font-mono whitespace-pre-wrap">
-													<div className="px-4 py-8 bg-slate-200 dark:bg-slate-950">
-														{JSON.stringify(
-															{ name: 1, index: 2, person: 3, user: 4 },
-															null,
-															" "
-														)}
-													</div>
+												<CardBody>
+													<LatestBlock />
 												</CardBody>
 											</Card>
 											<Card className="col-span-12 xl:col-span-6">
@@ -228,61 +184,15 @@ function App() {
 																Generate in the browser
 															</Tab>
 															<Tab className="grow">Generate locally</Tab>
+															<Tab className="grow">Submit Block</Tab>
 														</TabList>
-														<TabPanels>
-															<TabPanel>
-																<p>one!</p>
-															</TabPanel>
-															<TabPanel>
-																<p>two!</p>
-															</TabPanel>
-														</TabPanels>
+														<GenerateNextBlock
+															user={user?.userId ?? "system"}
+														/>
 													</Tabs>
 												</CardBody>
 											</Card>
-											<Card className="col-span-12 xl:col-span-6">
-												<CardHeader className="!pb-2">
-													<h2 className="text-3xl">Send Boilercoin</h2>
-												</CardHeader>
-												<CardBody>
-													<div>
-														<FormControl className="mb-4">
-															<FormLabel>Receipient</FormLabel>
-															<Input
-																value={receipient}
-																onChange={(e) => setReceipient(e.target.value)}
-															/>
-															<FormHelperText>
-																The wallet address of the receipient
-															</FormHelperText>
-														</FormControl>
-														<FormControl>
-															<FormLabel>Amount</FormLabel>
-															<NumberInput
-																value={amount}
-																onChange={(newAmount) =>
-																	setAmount(
-																		newAmount === "" ? 0 : parseInt(newAmount)
-																	)
-																}
-																min={0}
-																max={20}>
-																<NumberInputField />
-																<NumberInputStepper>
-																	<NumberIncrementStepper />
-																	<NumberDecrementStepper />
-																</NumberInputStepper>
-															</NumberInput>
-															<FormHelperText>
-																The amount of Boilercoin to send
-															</FormHelperText>
-														</FormControl>
-													</div>
-												</CardBody>
-												<CardFooter>
-													<Button colorScheme="purple">Send</Button>
-												</CardFooter>
-											</Card>
+											<SendBoilercoin user={user?.userId ?? "system"} />
 											<Card className="col-span-12 sm:col-span-6 xl:col-span-3">
 												<CardHeader className="!pb-2">
 													<h2 className="text-3xl">Receive Boilercoin</h2>
@@ -305,11 +215,11 @@ function App() {
 												<CardBody>
 													<div className="grid grid-cols-4 mb-4 gap-2">
 														<FormControl className="col-span-3">
-															<FormLabel>Amount</FormLabel>
+															<FormLabel>Block Index</FormLabel>
 															<NumberInput
 																value={blockNumber}
 																onChange={(newBlockNumber) =>
-																	setAmount(
+																	setBlockNumber(
 																		newBlockNumber === ""
 																			? 0
 																			: parseInt(newBlockNumber)
@@ -324,21 +234,21 @@ function App() {
 																</NumberInputStepper>
 															</NumberInput>
 															<FormHelperText>
-																The block number to retrieve
+																The block index to retrieve
 															</FormHelperText>
 														</FormControl>
 														<div className="flex flex-col justify-center">
-															<Button colorScheme="purple">Query</Button>
+															<Button
+																onClick={() =>
+																	setBlockNumberSearch(blockNumber)
+																}
+																colorScheme="blue">
+																Query
+															</Button>
 														</div>
 													</div>
 
-													<div className="px-4 py-8 bg-slate-200 dark:bg-slate-950 font-mono whitespace-pre-wrap">
-														{JSON.stringify(
-															{ name: 1, index: 2, person: 3, user: 4 },
-															null,
-															" "
-														)}
-													</div>
+													<ViewBlockInfo blockNumber={blockNumberSearch} />
 												</CardBody>
 											</Card>
 										</div>

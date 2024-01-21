@@ -4,7 +4,6 @@ import time
 
 
 class Blockchain:
-    difficulty = 1
     r = redis.StrictRedis()  # Junk value, will be overwritten by constructor
 
     def __init__(self, r: redis):
@@ -24,6 +23,8 @@ class Blockchain:
                 "blocks": 1,  # The number of blocks that the user mined
                 "balance": 100  # Each added block nets the author 100 Boilercoin
             })
+            r.zadd("user.balance.index", {"system": 100})
+            self.r.set("user_count", 1)  # Set the number of users in the application
 
     def last_block(self):
         last_block = int(self.r.get("block_count")) - 1
@@ -48,14 +49,16 @@ class Blockchain:
         else:
             self.r.hincrby(f"user:{block.author}", "blocks", 1)
             self.r.hincrby(f"user:{block.author}", "balance", 100)
+        self.r.zadd("user.balance.index", {block.author: self.r.hget(f"user:{block.author}", "balance")})
         self.r.incrby("block_count", 1)  # Increment the number of blocks by one
         return True
 
     def is_valid_proof(self, block: Block) -> bool:
-        return block.compute_hash().startswith('0' * self.difficulty)
+        return block.hash.startswith("0" * int(self.r.get("difficulty")))
 
     def proof_of_work(self, block: Block) -> Block:
         block.nonce = 0
+        block.hash = block.compute_hash()
 
         while not self.is_valid_proof(block):
             block.nonce += 1

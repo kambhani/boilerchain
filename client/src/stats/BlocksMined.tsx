@@ -1,23 +1,17 @@
-import {
-	StatLabel,
-	StatNumber,
-	StatHelpText,
-	StatArrow,
-	Spinner,
-} from "@chakra-ui/react";
+import { StatLabel, StatNumber, Spinner } from "@chakra-ui/react";
 import { useQuery } from "@tanstack/react-query";
 
 export default function BlocksMined() {
 	const { isPending, isError, data } = useQuery({
-		queryKey: ["block_count"],
+		queryKey: ["blocks_count"],
 		queryFn: () =>
-			fetch("http://127.0.0.1:8000/user/system").then((res) => res.json()),
+			fetch("http://127.0.0.1:8000/blocks/count").then((res) => res.json()),
 	});
 
 	if (isPending) {
 		return (
 			<>
-				<StatLabel>Blocks Mined</StatLabel>
+				<StatLabel>Blockchain Length</StatLabel>
 				<StatNumber>
 					<Spinner />
 				</StatNumber>
@@ -27,7 +21,7 @@ export default function BlocksMined() {
 	if (isError) {
 		return (
 			<>
-				<StatLabel>Blocks Mined</StatLabel>
+				<StatLabel>Blockchain Length</StatLabel>
 				<StatNumber>???</StatNumber>
 			</>
 		);
@@ -35,12 +29,8 @@ export default function BlocksMined() {
 
 	return (
 		<>
-			<StatLabel>Blocks Mined</StatLabel>
+			<StatLabel>Blockchain Length</StatLabel>
 			<StatNumber>{data.count}</StatNumber>
-			<StatHelpText>
-				<StatArrow type="increase" />
-				23.36%
-			</StatHelpText>
 		</>
 	);
 }
