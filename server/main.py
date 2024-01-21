@@ -25,7 +25,7 @@ r = redis.Redis(
 r.set("difficulty", 1)
 
 origins = [
-    "http://localhost:5173"
+    "http://127.0.0.1:5173",
 ]
 app = FastAPI()  # Start the API
 app.add_middleware(
