@@ -95,6 +95,7 @@ function App() {
 			<div className="flex w-[100vw] min-h-[100vh] justify-center items-center bg-slate-50 dark:bg-slate-950">
 				<div className="">
 					<ThemeProvider
+						// @ts-ignore
 						theme={theme}
 						colorMode={isDarkMode ? "dark" : "light"}>
 						<Authenticator className="m-8" components={components}>
