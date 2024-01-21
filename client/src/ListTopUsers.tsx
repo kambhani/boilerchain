@@ -28,7 +28,7 @@ export default function ListTopUsers() {
 
 	return (
 		<Stack divider={<StackDivider />} spacing="4">
-			{data.map((user) => (
+			{data.map((user: string[]) => (
 				<Box key={user[0]}>
 					<Heading size="xs" textTransform="uppercase">
 						{user[0]}
