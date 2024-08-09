@@ -18,8 +18,10 @@ client = boto3.client('cognito-idp', region_name=os.getenv("AWS_REGION"))  # Loa
 r = redis.Redis(
     host=os.getenv('REDIS_HOST'),
     port=os.getenv('REDIS_PORT'),
+    username=os.getenv('REDIS_USERNAME'),
     password=os.getenv('REDIS_PASSWORD'),
-    decode_responses=True
+    decode_responses=True,
+    ssl=True
 )
 #r.flushdb()
 r.set("difficulty", os.getenv("DIFFICULTY"))
