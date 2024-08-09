@@ -22,10 +22,10 @@ r = redis.Redis(
     decode_responses=True
 )
 #r.flushdb()
-r.set("difficulty", 1)
+r.set("difficulty", os.getenv("DIFFICULTY"))
 
 origins = [
-    "http://127.0.0.1:5173",
+    os.getenv('ORIGIN'),
 ]
 app = FastAPI()  # Start the API
 app.add_middleware(

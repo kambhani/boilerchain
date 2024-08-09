@@ -12,7 +12,7 @@ export default function ListTopUsers() {
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["users_top"],
 		queryFn: () =>
-			fetch("http://127.0.0.1:8000/users/top").then((res) => res.json()),
+			fetch(`${import.meta.env.VITE_API_URL}/users/top`).then((res) => res.json()),
 	});
 
 	if (isPending) {

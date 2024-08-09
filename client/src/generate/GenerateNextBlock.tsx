@@ -8,7 +8,7 @@ export default function GenerateNextBlock({ user }: { user: string }) {
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["blockchain_difficulty"],
 		queryFn: () =>
-			fetch("http://127.0.0.1:8000/blockchain/difficulty").then((res) =>
+			fetch(`${import.meta.env.VITE_API_URL}/blockchain/difficulty`).then((res) =>
 				res.json()
 			),
 	});

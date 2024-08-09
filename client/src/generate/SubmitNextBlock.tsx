@@ -20,7 +20,7 @@ export default function SubmitNextBlock() {
 				accessToken: "",
 				idToken: "",
 			};
-			const res = await fetch("http://127.0.0.1:8000/block/add", {
+			const res = await fetch(`${import.meta.env.VITE_API_URL}/block/add`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

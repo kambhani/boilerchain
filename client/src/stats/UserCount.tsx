@@ -5,7 +5,7 @@ export default function UserCount() {
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["user_count"],
 		queryFn: () =>
-			fetch("http://127.0.0.1:8000/users/count").then((res) => res.json()),
+			fetch(`${import.meta.env.VITE_API_URL}/users/count`).then((res) => res.json()),
 	});
 
 	if (isPending) {

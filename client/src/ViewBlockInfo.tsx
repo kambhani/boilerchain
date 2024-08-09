@@ -9,7 +9,7 @@ export default function ViewBlockInfo({
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["block", blockNumber],
 		queryFn: () =>
-			fetch(`http://127.0.0.1:8000/block/${blockNumber}`).then((res) =>
+			fetch(`${import.meta.env.VITE_API_URL}/block/${blockNumber}`).then((res) =>
 				res.json()
 			),
 	});

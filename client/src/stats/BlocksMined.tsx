@@ -5,7 +5,7 @@ export default function BlocksMined() {
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["blocks_count"],
 		queryFn: () =>
-			fetch("http://127.0.0.1:8000/blocks/count").then((res) => res.json()),
+			fetch(`${import.meta.env.VITE_API_URL}/blocks/count`).then((res) => res.json()),
 	});
 
 	if (isPending) {

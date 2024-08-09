@@ -8,7 +8,7 @@ import {
 	Image,
 } from "@aws-amplify/ui-react";
 import "@aws-amplify/ui-react/styles.css";
-// @ts-ignore
+// @ts-expect-error AWS exports file is js file, so it has no TS declarations
 import awsExports from "./aws-exports";
 import { useDarkMode } from "usehooks-ts";
 import { Button, IconButton } from "@chakra-ui/react";
@@ -95,7 +95,7 @@ function App() {
 			<div className="flex w-[100vw] min-h-[100vh] justify-center items-center bg-slate-50 dark:bg-slate-950">
 				<div className="">
 					<ThemeProvider
-						// @ts-ignore
+						// @ts-expect-error theme is fine
 						theme={theme}
 						colorMode={isDarkMode ? "dark" : "light"}>
 						<Authenticator className="m-8" components={components}>

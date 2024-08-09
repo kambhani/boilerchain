@@ -5,7 +5,7 @@ export default function UserBalance({ user }: { user: string }) {
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["user_blockchain_data"],
 		queryFn: () =>
-			fetch(`http://127.0.0.1:8000/user/${user}`).then((res) => res.json()),
+			fetch(`${import.meta.env.VITE_API_URL}/user/${user}`).then((res) => res.json()),
 	});
 
 	if (isPending) {

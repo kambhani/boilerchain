@@ -11,7 +11,7 @@ export default function GenerateLocally({
 	const { isPending, isError, data } = useQuery({
 		queryKey: ["last_block"],
 		queryFn: () =>
-			fetch("http://127.0.0.1:8000/blocks/last").then((res) => res.json()),
+			fetch(`${import.meta.env.VITE_API_URL}/blocks/last`).then((res) => res.json()),
 	});
 
 	if (isPending) {
